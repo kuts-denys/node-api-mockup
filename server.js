@@ -9,7 +9,7 @@ const session = require('express-session');
 const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 
-const router = require('./routes');
+const router = require('./src/routes');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(

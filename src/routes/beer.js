@@ -1,8 +1,6 @@
 const express = require('express');
 
-const {
-  postBeers, getBeers, getBeer, putBeer, deleteBeer,
-} = require('./../controllers/beer');
+const { postBeers, getBeers, getBeer, putBeer, deleteBeer } = require('./../controllers/beer');
 const { protectedRoute } = require('./../passport/jwtStrategy');
 const { catchErrors } = require('../middleware/errorHandlers');
 

@@ -17,11 +17,24 @@
     "swagger-ui-express": "^4.0.1"
   },
   "scripts": {
-    "start": "nodemon --inspect server.js"
+    "start": "nodemon --inspect server.js",
+    "pretty": "prettier --write \"./src/**/*.js\""
+  },
+  "hooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "npm run pretty",
+      "git add"
+    ]
   },
   "devDependencies": {
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-security": "^1.4.0"
+    "eslint-plugin-security": "^1.4.0",
+    "husky": "^1.1.2",
+    "lint-staged": "^7.3.0"
   }
 }

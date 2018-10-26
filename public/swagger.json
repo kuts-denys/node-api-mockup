@@ -1,0 +1,255 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Beer API",
+    "version": "3.0.0",
+    "description": "Manage your beer boi"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api",
+      "description": "Beer server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "responses": {
+      "NotFound": {
+        "description": "The specified resource was not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {}
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Response": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        },
+        "discriminator": {
+          "propertyName": "message"
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "stackHighlighted": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "message",
+          "stackHighlighted"
+        ]
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "username",
+          "password",
+          "email"
+        ],
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "email": {
+            "type": "integer"
+          }
+        }
+      },
+      "SignupRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password",
+          "email"
+        ],
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        }
+      },
+      "SignupResponse": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Response"
+          },
+          {
+            "type": "object",
+            "required": [
+              "data"
+            ],
+            "properties": {
+              "data": {
+                "type": "object",
+                "required": [
+                  "token",
+                  "user"
+                ],
+                "properties": {
+                  "token": {
+                    "type": "string"
+                  },
+                  "user": {
+                    "type": "object",
+                    "properties": {
+                      "username": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "username",
+                      "email"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of user names",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Add a new user",
+        "requestBody": {
+          "description": "Necessary fields are username, password, email",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignupRequest"
+              },
+              "example": {
+                "username": "Denys",
+                "password": "12345",
+                "email": "denysk@gmail.com"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Sign up/cteate a new user, user object and access token are returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignupResponse"
+                },
+                "example": {
+                  "message": "User has been successfully created",
+                  "data": {
+                    "user": {
+                      "username": "Denys",
+                      "email": "denysk@gmail.com"
+                    },
+                    "token": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjViYTllZDM5YmJjMGZkNmFkY2UwN2ExMCIsInVzZXJuYW1lIjoiZGVueXNrayIsInBhc3N3b3JkIjoiJDJiJDEwJFNaZVFLeGM5czh2NlNicWl1ZnJFbGVlVTcwWjhjL0dNVjN0aVJwYS54Wi5WcldBQlBGakxxIiwiaWF0IjoxNTM3ODYyOTY5LCJleHAiOjE1NDE0NjI5Njl9.qJdrJIxGxSwb4W-B8gEVh-3xu2pYgEV04VTrhcIwyHI"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      }
+    }
+  }
+}

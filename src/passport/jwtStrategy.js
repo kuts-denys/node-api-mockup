@@ -21,4 +21,6 @@ passport.use(
   }),
 );
 
-module.exports.protectedRoute = passport.authenticate('jwt', { session: false });
+module.exports.protectedRoute = passport.authenticate('jwt', {
+  session: false,
+});

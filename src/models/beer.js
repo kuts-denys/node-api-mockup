@@ -6,12 +6,9 @@ const BeerSchema = new mongoose.Schema(
   {
     name: String,
 
-
-
-
     type: String,
     quantity: Number,
-            ownerId: String,
+    ownerId: String,
   },
   {
     toJSON: {

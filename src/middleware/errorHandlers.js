@@ -8,7 +8,7 @@ const notFound = (req, res, next) => {
   next(err);
 };
 
-const handleErrors = (err, req, res, next) => {
+const handleErrors = (err, req, res) => {
   const stack = err.stack || '';
   const errorDetails = {
     message: err.message,

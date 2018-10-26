@@ -18,16 +18,18 @@
   },
   "scripts": {
     "start": "nodemon --inspect server.js",
-    "pretty": "prettier --write \"./src/**/*.js\""
+    "pretty": "prettier --single-quote --trailing-comma es5 --write \"./src/**/*.js\" && prettier --single-quote --trailing-comma es5 --write \"server.js\""
   },
-  "hooks": {
-    "pre-commit": "lint-staged"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.js": [
-      "eslint --fix",
-      "npm run pretty",
-      "git add"
+      "yarn pretty",
+      "eslint --fix .",
+      "git add ."
     ]
   },
   "devDependencies": {

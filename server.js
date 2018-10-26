@@ -25,7 +25,13 @@ app.use(morgan('tiny'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(session({ secret: process.env.SESSION_SECRET_KEY, resave: true, saveUninitialized: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET_KEY,
+    resave: true,
+    saveUninitialized: true,
+  }),
+);
 app.use(passport.initialize());
 
 const port = process.env.PORT || 3000;

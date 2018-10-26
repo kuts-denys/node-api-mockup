@@ -1,6 +1,12 @@
 const express = require('express');
 
-const { postUser, getUsers, loginUser, logoutUser, forgotPassword } = require('./../controllers/user');
+const {
+  postUser,
+  getUsers,
+  loginUser,
+  logoutUser,
+  forgotPassword,
+} = require('./../controllers/user');
 const { protectedRoute } = require('./../passport/jwtStrategy');
 const { catchErrors } = require('../middleware/errorHandlers');
 

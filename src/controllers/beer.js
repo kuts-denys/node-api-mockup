@@ -14,7 +14,10 @@ const getBeers = async (req, res) => {
 };
 
 const getBeer = async (req, res) => {
-  const beer = await BeerModel.find({ ownerId: req.user._id, _id: req.params.beer_id });
+  const beer = await BeerModel.find({
+    ownerId: req.user._id,
+    _id: req.params.beer_id,
+  });
   res.json(beer);
 };
 

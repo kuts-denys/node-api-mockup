@@ -3,7 +3,7 @@ const BeerModel = require('../models/beer');
 const postBeers = async (req, res) => {
   const { name, type, quantity } = req.body;
   const userId = req.user._id;
-  const beer = { name, type, quantity, userId };
+  const beer = { name, type, quantity, ownerId: userId };
   const createdBeer = await new BeerModel(beer).save();
   res.json({ message: 'BeerModel added to the locker!', data: createdBeer });
 };
@@ -14,24 +14,40 @@ const getBeers = async (req, res) => {
 };
 
 const getBeer = async (req, res) => {
-  const beer = await BeerModel.find({
+  const beer = await BeerModel.findOne({
     ownerId: req.user._id,
     _id: req.params.beer_id,
   });
-  res.json(beer);
+  if (!beer) {
+    res.status(404).json({ message: "Beer with such id doesn't exist" });
+  } else {
+    res.json(beer);
+  }
 };
 
 const putBeer = async (req, res) => {
-  const beer = await BeerModel.update(
+  const beer = await BeerModel.findByIdAndUpdate(
     { ownerId: req.user._id, _id: req.params.beer_id },
     { quantity: req.body.quantity },
+    { new: true },
   );
-  res.json({ message: `${beer.n} updated` });
+  if (!beer) {
+    res.status(404).json({ message: "Beer with such id doesn't exist" });
+  } else {
+    res.json({ message: 'Beer successfully updated', data: beer });
+  }
 };
 
 const deleteBeer = async (req, res) => {
-  await BeerModel.remove({ ownerId: req.user._id, _id: req.params.beer_id });
-  res.json({ message: 'BeerModel has been removes successfully.' });
+  const removedBeer = await BeerModel.remove({
+    ownerId: req.user._id,
+    _id: req.params.beer_id,
+  });
+  if (!removedBeer.n) {
+    res.status(404).json({ message: "Beer with such id doesn't exist" });
+  } else {
+    res.json({ message: 'Beer has been removed successfully.' });
+  }
 };
 
 module.exports = {

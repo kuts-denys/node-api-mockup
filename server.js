@@ -10,7 +10,10 @@ const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 
 const router = require('./src/routes');
+const redisController = require('./src/redis');
+const tokenExpirationMiddleware = require('./src/middleware/tokenExpiration');
 
+redisController.init();
 mongoose.Promise = global.Promise;
 mongoose.connect(
   process.env.MONGO_URI,
@@ -32,6 +35,7 @@ app.use(
     saveUninitialized: true,
   }),
 );
+app.use(tokenExpirationMiddleware);
 app.use(passport.initialize());
 
 const port = process.env.PORT || 3000;

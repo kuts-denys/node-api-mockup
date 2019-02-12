@@ -54,7 +54,8 @@ UserSchema.methods.generateToken = function () {
     jwt.sign(
       { id: this._id, username: this.username, password: this.password },
       process.env.TOKEN_SECRET_KEY,
-      { expiresIn: 60 * 60 * 1000 },
+      // { expiresIn: 15 * 60 * 1000 },
+      { expiresIn: 15 * 60 },
       (err, token) => {
         if (err) reject(err);
         resolve(token);

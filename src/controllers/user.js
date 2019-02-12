@@ -1,5 +1,6 @@
 const crypto = require('crypto');
 const UserModel = require('./../models/user');
+const redisController = require('./../redis');
 
 const postUser = async (req, res) => {
   const { username, password, email } = req.body;
@@ -27,7 +28,9 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  console.log('asdasd', req.user);
+  const token = req.get('Authorization');
+  // set token to redis tokens blacklist and expire hin in 15 minutes
+  redisController.getClient().set(token.split(' ')[1], true, 'EX', 15 * 60);
   req.logout();
   res.json({ message: 'User logged out successfully' });
 };
